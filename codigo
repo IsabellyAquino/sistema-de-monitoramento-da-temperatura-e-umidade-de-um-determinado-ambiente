@@ -1,0 +1,54 @@
+#include <DHTesp.h>
+
+// Define pino dos Leds 1 e 2
+#define LEDPIN1 14
+#define LEDPIN2 12
+
+#define DHT_PIN 15 // Define pino do sensor
+//Variáveis temp e humidade inicializam com zero
+int temperatura = 0;
+int humidade = 0;
+
+
+DHTesp dhtSensor; //Define objeto sensor
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(LEDPIN1, OUTPUT);
+  pinMode(LEDPIN2, OUTPUT);
+
+  dhtSensor.setup(DHT_PIN, DHTesp::DHT22);
+
+}
+
+void loop() {
+  TempAndHumidity data = dhtSensor.getTempAndHumidity();
+  
+  //Variáveis passam a receber valor do sensor 
+  humidade = data.humidity;
+  temperatura = data.temperature;
+
+//Se temperatura for maior ou igual 35 LED1 acende
+  if(temperatura >= 35){
+    digitalWrite(LEDPIN1, HIGH);
+    Serial.println("ATENÇÃO: A temperatura ultrapassa 35°C no momento!");
+} else {
+     digitalWrite(LEDPIN1, LOW);
+     Serial.println("Temperatura abaixo dos 35% no momento!");
+}
+
+//Se a humidade for maior que 70% LED2 acende
+if(humidade > 70){
+    digitalWrite(LEDPIN2, HIGH);
+    Serial.println("ATENÇÃO: A Humidade ultrapassa 70% no momento!");
+} else {
+    digitalWrite(LEDPIN2, LOW);
+    Serial.println("Humidade abaixo dos 70% no momento!");
+}
+
+//Define um intervalo de 5s para os dados capturados 
+delay(5000);
+
+}
+
